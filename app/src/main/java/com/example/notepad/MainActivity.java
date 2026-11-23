@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.notepad.data.Note;
 import com.example.notepad.data.NoteDbHelper;
+import com.example.notepad.ui.CuteBackgroundDrawable;
 import com.example.notepad.ui.NoteAdapter;
 import com.example.notepad.util.BackupManager;
 import com.example.notepad.util.NoteJsonUtils;
@@ -69,6 +70,7 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.Liste
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        findViewById(R.id.root).setBackground(new CuteBackgroundDrawable(this));
 
         db = NoteDbHelper.get(this);
         toolbar = findViewById(R.id.toolbar);

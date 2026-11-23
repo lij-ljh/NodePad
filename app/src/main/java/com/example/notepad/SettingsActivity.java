@@ -14,6 +14,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
 import com.example.notepad.ui.ColorPickerDialog;
+import com.example.notepad.ui.CuteBackgroundDrawable;
 import com.example.notepad.util.NoteColors;
 import com.example.notepad.util.Prefs;
 
@@ -28,6 +29,7 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+        findViewById(R.id.settingsRoot).setBackground(new CuteBackgroundDrawable(this));
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

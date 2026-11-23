@@ -25,10 +25,10 @@
         <item name="colorError">@color/error</item>
         <item name="colorOnError">@color/on_error</item>
 
-        <item name="android:statusBarColor">@color/surface</item>
-        <item name="android:navigationBarColor">@color/surface</item>
+        <item name="android:statusBarColor">@color/app_bg_start</item>
+        <item name="android:navigationBarColor">@color/app_bg_start</item>
         <item name="android:windowLightStatusBar">@bool/light_status_bar</item>
-        <item name="android:windowBackground">@color/surface</item>
+        <item name="android:windowBackground">@color/app_bg_start</item>
     </style>
 
     <style name="Widget.NodePad.Toolbar" parent="Widget.Material3.Toolbar">
@@ -37,15 +37,23 @@
     </style>
 
     <style name="TextAppearance.NodePad.ToolbarTitle" parent="TextAppearance.Material3.TitleLarge">
-        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:fontFamily">sans-serif-rounded</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:letterSpacing">0.02</item>
     </style>
 
     <style name="Widget.NodePad.CategoryChip" parent="Widget.Material3.Chip.Assist">
-        <item name="android:textSize">12sp</item>
-        <item name="chipMinHeight">28dp</item>
+        <item name="android:textSize">13sp</item>
+        <item name="chipMinHeight">30dp</item>
         <item name="chipBackgroundColor">@color/brand_secondary_container</item>
         <item name="android:textColor">@color/brand_on_secondary_container</item>
         <item name="chipStrokeWidth">0dp</item>
+        <item name="chipCornerRadius">15dp</item>
         <item name="ensureMinTouchTargetSize">false</item>
+    </style>
+
+    <style name="ShapeAppearance.NodePad.Fab" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">20dp</item>
     </style>
 </resources>

@@ -37,7 +37,8 @@
    待办内容以 `[ ] 条目` / `[x] 条目` 纯文本存储，导出、备份后不丢失。
 
 4. **便签美化与主题**
-   提供 8 种便签背景色，列表卡片与编辑器背景同步着色，深色主题下自动调暗保证可读性；
+   采用糖果色系主题，主界面使用卡通渐变背景并点缀云朵、星星图案；提供 8 种便签背景色，
+   列表卡片为圆角贴纸样式，卡片与编辑器背景同步着色，深色主题下自动调暗保证可读性；
    支持跟随系统、浅色、深色三种主题，以及纯色 / 横线纸两种编辑器背景样式。
 
 5. **排序与置顶**
@@ -64,7 +65,8 @@
   并与分类、类型条件动态拼接。
 - **待办**：`TodoUtils` 负责待办文本的序列化与解析，清单项以 Markdown 风格复选框文本落库。
 - **主题与配色**：`Prefs` 保存偏好，`AppCompatDelegate` 切换夜间模式；`NoteColors` 统一管理色板，
-  `LinedPaperDrawable` 自定义 Drawable 绘制横线纸背景。
+  `LinedPaperDrawable` 自定义 Drawable 绘制横线纸背景，`CuteBackgroundDrawable` 绘制卡通渐变背景
+  与云朵、星星装饰，深浅色主题各有一套配色。
 - **文件读写**：导出/导入使用 Storage Access Framework；备份通过 `FileProvider`
   生成可分享的 `content://` URI，不暴露真实文件路径。
 - **UI**：`RecyclerView` + 自定义 `NoteAdapter`，`MaterialCardView` 便签卡片，
@@ -84,6 +86,7 @@ app/src/main/
 │   ├── ui/
 │   │   ├── NoteAdapter.java        # 笔记列表适配器
 │   │   ├── ColorPickerDialog.java  # 便签颜色选择
+│   │   ├── CuteBackgroundDrawable.java # 卡通渐变背景
 │   │   └── LinedPaperDrawable.java # 横线纸背景
 │   └── util/
 │       ├── Prefs.java              # 偏好设置读写
