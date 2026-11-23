@@ -1,87 +1,128 @@
 # NodePad 记事本
 
-一个基于 Java + SQLite 的 Android 记事本应用，支持文字、待办、图片三种笔记类型，
-具备分类、搜索、排序、便签颜色、主题切换、导出与本地/云端备份恢复等功能。
+一个基于 Java + SQLite 的 Android 记事本应用。除笔记增删改查、时间戳、内容搜索等基本功能外，
+还实现了分类管理、多类型笔记、待办清单、便签配色与主题、排序置顶、导出导入、备份恢复等功能。
 
-## 功能特性
+## 界面预览
 
-- 笔记增删改查，自动记录创建时间与修改时间
-- 标题 / 内容关键字搜索，可与分类、类型组合筛选
-- 笔记分类：分类筛选、分类标签、编辑器内新建分类
-- 多类型笔记：文字笔记、待办清单、图片笔记
-- 待办清单：添加、勾选、删除，列表显示完成进度
-- 便签美化：8 种便签背景色、横线纸背景、浅色 / 深色主题
-- 排序：修改时间升降序、创建时间、标题；支持置顶
-- 数据导出 / 导入（JSON，SAF 选择文件，无需存储权限）
-- 本地备份与恢复：自动保留最近 10 份，支持合并或覆盖恢复
-- 云备份：备份文件可一键分享到网盘、聊天工具
-- 偏好设置：主题、默认排序、正文字号、默认便签颜色、背景样式
-
-## 界面截图
-
-| 笔记列表 | 待办清单 | 偏好设置 |
+| 笔记列表 | 待办清单编辑 | 便签配色 |
 | :---: | :---: | :---: |
-| ![列表](docs/screenshots/list.png) | ![待办](docs/screenshots/todo.png) | ![设置](docs/screenshots/settings.png) |
+| ![笔记列表](docs/screenshots/01-list.png) | ![待办清单](docs/screenshots/02-todo-editor.png) | ![便签配色](docs/screenshots/03-color-picker.png) |
 
-> 建议把截图放在 `docs/screenshots/` 目录，首屏截图最能决定别人是否继续看。
+| 偏好设置 | 备份与恢复 | 新建笔记类型 |
+| :---: | :---: | :---: |
+| ![偏好设置](docs/screenshots/04-settings.png) | ![备份恢复](docs/screenshots/05-backup-restore.png) | ![笔记类型](docs/screenshots/06-note-types.png) |
 
-## 技术栈
+## 功能说明
 
-- 语言：Java
-- 数据存储：SQLite（SQLiteOpenHelper）
-- UI：Material 3、RecyclerView、Chip、MaterialCardView
-- 文件访问：Storage Access Framework、FileProvider
-- 构建：Gradle 8.11.1、AGP 8.7.3
-- SDK：compileSdk 35、minSdk 24、targetSdk 35
+### 基本功能
+
+- **笔记列表显示时间戳**：列表卡片展示每条笔记的最后修改时间，按“yyyy-MM-dd HH:mm”格式显示；
+  编辑器内同时展示创建时间与修改时间。
+- **笔记内容搜索**：顶部搜索框输入关键字，即按“标题或正文”实时过滤，支持与分类筛选、类型筛选组合使用；
+  无结果时展示空状态提示。
+
+### 扩展功能
+
+1. **笔记分类**
+   支持为笔记设置分类，列表顶部以分类标签（Chip）筛选，编辑器内可直接新建分类，
+   搜索与分类可叠加过滤。
+
+2. **多类型笔记**
+   新建时可选文字笔记、待办清单、图片笔记三种类型；图片笔记从相册选择图片并持久化读取权限，
+   列表显示缩略图与类型徽标，工具栏可按类型筛选。
+
+3. **待办清单**
+   支持添加、勾选、删除待办项，列表卡片直接显示“已完成 1/3 · 第一项待办”的进度摘要。
+   待办内容以 `[ ] 条目` / `[x] 条目` 纯文本存储，导出、备份后不丢失。
+
+4. **便签美化与主题**
+   提供 8 种便签背景色，列表卡片与编辑器背景同步着色，深色主题下自动调暗保证可读性；
+   支持跟随系统、浅色、深色三种主题，以及纯色 / 横线纸两种编辑器背景样式。
+
+5. **排序与置顶**
+   支持修改时间升降序、创建时间、标题四种排序方式，重要笔记可置顶显示。
+
+6. **导出与导入**
+   使用系统文件选择器（SAF）将全部笔记导出为 JSON 文件，或从 JSON 文件导入笔记，
+   无需申请存储权限。
+
+7. **备份与恢复**
+   一键备份到应用私有备份目录，自动保留最近 10 份；备份文件可通过系统分享保存到网盘、
+   聊天工具等实现云备份；恢复时可选择合并或覆盖现有笔记。
+
+8. **偏好设置**
+   可配置主题模式、默认排序方式、编辑器正文字号、新建笔记默认便签颜色与编辑器背景样式，
+   设置即时生效并持久保存。
+
+## 技术实现
+
+- **架构与语言**：Java + 原生 Android SDK，`AppCompatActivity` + Material 3 组件。
+- **数据存储**：`SQLiteOpenHelper` 管理笔记表，数据库版本 2 通过 `ALTER TABLE` 增量升级，
+  兼容旧版本数据不丢失。
+- **搜索**：SQL `WHERE title LIKE ? OR content LIKE ?` 实现标题与正文模糊搜索，
+  并与分类、类型条件动态拼接。
+- **待办**：`TodoUtils` 负责待办文本的序列化与解析，清单项以 Markdown 风格复选框文本落库。
+- **主题与配色**：`Prefs` 保存偏好，`AppCompatDelegate` 切换夜间模式；`NoteColors` 统一管理色板，
+  `LinedPaperDrawable` 自定义 Drawable 绘制横线纸背景。
+- **文件读写**：导出/导入使用 Storage Access Framework；备份通过 `FileProvider`
+  生成可分享的 `content://` URI，不暴露真实文件路径。
+- **UI**：`RecyclerView` + 自定义 `NoteAdapter`，`MaterialCardView` 便签卡片，
+  `ChipGroup` 分类筛选，`MaterialAlertDialogBuilder` 完成排序、颜色、备份等交互。
 
 ## 项目结构
 
 ```text
-app/src/main/java/com/example/notepad/
-├── MainActivity.java          # 列表、搜索、筛选、备份恢复
-├── NoteEditorActivity.java    # 文字 / 待办 / 图片编辑
-├── SettingsActivity.java      # 偏好设置
-├── data/
-│   ├── Note.java              # 笔记模型
-│   └── NoteDbHelper.java      # SQLite 建表、迁移、查询
-├── ui/
-│   ├── NoteAdapter.java       # 列表适配器
-│   ├── ColorPickerDialog.java # 便签颜色选择
-│   └── LinedPaperDrawable.java# 横线纸背景
-└── util/
-    ├── Prefs.java             # 偏好设置
-    ├── TodoUtils.java         # 待办文本解析
-    ├── NoteColors.java        # 色板与深色适配
-    ├── NoteJsonUtils.java     # JSON 序列化
-    └── BackupManager.java     # 本地备份管理
+app/src/main/
+├── java/com/example/notepad/
+│   ├── MainActivity.java           # 列表、搜索、筛选、排序、导出导入、备份恢复
+│   ├── NoteEditorActivity.java     # 文字 / 待办 / 图片笔记编辑
+│   ├── SettingsActivity.java       # 偏好设置
+│   ├── data/
+│   │   ├── Note.java               # 笔记数据模型
+│   │   └── NoteDbHelper.java       # 建表、升级、查询
+│   ├── ui/
+│   │   ├── NoteAdapter.java        # 笔记列表适配器
+│   │   ├── ColorPickerDialog.java  # 便签颜色选择
+│   │   └── LinedPaperDrawable.java # 横线纸背景
+│   └── util/
+│       ├── Prefs.java              # 偏好设置读写
+│       ├── TodoUtils.java          # 待办文本解析
+│       ├── NoteColors.java         # 便签色板与深色适配
+│       ├── NoteJsonUtils.java      # 笔记 JSON 序列化
+│       └── BackupManager.java      # 本地备份管理
+└── res/
+    ├── layout/                     # 主界面、编辑器、列表项等布局
+    ├── drawable/                   # 背景、图标等资源
+    └── values/                     # 主题、颜色、字符串
 ```
 
 ## 运行方式
 
-1. 用 Android Studio 打开项目根目录，等待 Gradle Sync 完成
-2. Gradle JDK 选择 JDK 17
-3. 选择模拟器或真机，运行 `app` 模块
+1. 使用 Android Studio 打开项目根目录，等待 Gradle Sync 完成。
+2. Gradle JDK 选择 **JDK 17**（Gradle 8.11.1 不支持更高版本）。
+3. 选择模拟器或真机，运行 `app` 模块。
 
-命令行构建：
+命令行构建（Windows）：
 
 ```bash
-# Windows
 gradlew.bat assembleDebug
-
-# macOS / Linux
-./gradlew assembleDebug
 ```
 
 APK 输出路径：`app/build/outputs/apk/debug/app-debug.apk`
 
-## 实现说明
+环境要求：Android Studio、JDK 17、Android SDK 35，最低支持 Android 7.0（API 24）。
 
-- 数据库版本为 2，升级时使用 `ALTER TABLE` 增量添加字段，旧笔记不会丢失
-- 待办内容以 `[ ] 条目` / `[x] 条目` 的纯文本格式存储，便于导出与备份
-- 备份文件保存在应用外部私有目录 `backups/`，通过 FileProvider 分享到网盘
-- 便签背景色在深色主题下自动调暗，保证文字可读性
+## 考核项对照
+
+| 考核项 | 分值 | 实现情况 |
+| :--- | :---: | :--- |
+| 笔记列表显示时间戳 | 5 | 列表显示修改时间，编辑器显示创建/修改时间 |
+| 笔记内容搜索 | 5 | 标题 + 正文实时模糊搜索，可与分类、类型组合 |
+| 扩展功能 | 8 | 已实现分类、多类型笔记、待办、便签美化与主题、排序置顶、导出导入、备份恢复、偏好设置共 8 项 |
+| README 文档 | 2 | 本文档，含功能说明、界面截图、技术实现、项目结构与运行说明 |
 
 ## 作者
 
-- 姓名 / 学号
+- 姓名 / 学号：
 - 课程：移动软件开发
